@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+Hello VM.
+
+## 你看不到我 ---注释
+
+#*
+这里都看不到   ---代码块的注释
+*#
+
+## 使得变量显示出来的方式，有！如果值不存在，不显示
+value1:$!{value1}
+      $!{value2}
+      ${value3}
+
+##遍历的方法foreach
+## 定义一个color变量
+#foreach ($color in $colors)
+##循环两种方式  一个是。index开始，一个。count开始
+Color $!{foreach.index}/$!{foreach.count}: $!{color}
+#end
+
+#foreach($key in $map.keySet())
+##$!{key} $map.get($key) 得到key变量值，key也可以放在后面
+Number $!{foreach.index}/$!{foreach.count}: $!{key} $map.get($key)
+#end
+##也可以用java中相似的方法写
+#foreach($kv in $map.entrySet())
+Number $!{foreach.index}/$!{foreach.count}: $!{kv.key} $!{kv.value}
+#end
+
+##两种方式，直接调用user.name：查找相关的内容或者getName方法调用
+User:$!{user.name}
+User:$!{user.getName()}
+
+#set($title = "nowcoder")
+Include: #include("header.vm") <br>
+Parse:#parse("header.vm")
+
+#macro (render_color, $color, $index)
+Color By Macro $index, $color
+#end
+
+#foreach ($color in $colors)
+    #render_color($color, $foreach.index)
+#end
+##把header文件包含进来，采用set 和 Include方法
+#set($title = "nowcoder")
+Include: #include("header.vm")
+Parse:#parse("header.vm")
+#*两者的区别
+Include: Title $!title   纯粹的包含进来
+Parse:Title nowcoder  包含进来，还要编译的
+*#
+
+##通过函数预定义一些函数，用下面的方法调用，达到渲染效果
+#maccro (render_color,$color,$index)
+Color By Macro $index,$color
+#end
+
+#foreach ($color in $colors)
+  #render_color($color,$foreach.index)
+  #end
+#* 输出效果
+ Color By Macro 0, RED
+    Color By Macro 1, GREEN
+    Color By Macro 2, BLUE
+*#
+
+#set($hello = "hello")
+#set($hworld1 = "$!{hello} world") ##直接调用前边的变量
+#set($hworld2 = '$!{hello} world')
+##单引号：文本输出无解析   双引号 ：才会对模板进行解析
+hworld1:$hworld1
+hworld2:$hworld2
+
+$!{colors.size()}
+
+</pre>
+</body>
+</html>
